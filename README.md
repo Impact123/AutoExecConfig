@@ -22,22 +22,28 @@ The include was wrote it in a way that only the used command must be changed in 
 
 Lets assume you already wrote an plugin with some convars which might look like this.
 
-    CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
-    CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
-    CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
-    
-    AutoExecConfig(true, "plugin.myplugin");
+    public OnPluginStart()
+	{
+		CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
+		CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
+		CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
+		
+		AutoExecConfig(true, "plugin.myplugin");
+	}
     
 In order to use this include it would simply have to be changed to this:  
     
-    // Set the file for the include
-    AutoExecConfig_SetFile("autoexecconfigtest");
-    
-    AutoExecConfig_CreateConVar("sm_myplugin_enabled", "1", "Whether or not thisplugin is enabled");
-    AutoExecConfig_CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
-    AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
-    
-    AutoExecConfig(true, "plugin.myplugin");
+    public OnPluginStart()
+	{
+		// Set the file for the include
+		AutoExecConfig_SetFile("plugin.myplugin");
+		
+		AutoExecConfig_CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
+		AutoExecConfig_CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
+		AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
+		
+		AutoExecConfig(true, "plugin.myplugin");
+	}
     
 ## Notes
 * Don't put spaces between cvarvalues, else the validation failes which results in endless appending
