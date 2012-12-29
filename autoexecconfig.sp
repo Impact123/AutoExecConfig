@@ -53,9 +53,7 @@ public OnPluginStart()
 	// Cleaning is expensive
 	if(appended)
 	{
-		decl String:sfile[PLATFORM_MAX_PATH];
-		AutoExecConfig_GetFile(sfile, sizeof(sfile));
-		AutoExecConfig_CleanFile(sfile);
+		AutoExecConfig_CleanFile();
 	}
 	
 
