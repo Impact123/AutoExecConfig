@@ -29,12 +29,18 @@
 // Clean
 #define AUTOEXEC_CLEAN_FILE_NOT_FOUND  20
 #define AUTOEXEC_CLEAN_BAD_HANDLE      21
-#define AUTOEXEC_CLEAN_SUCCESS         31
+#define AUTOEXEC_CLEAN_SUCCESS         22
 
 
 
 // General
 #define AUTOEXEC_NO_CONFIG             30
+
+
+
+// Formatter
+#define AUTOEXEC_FORMAT_BAD_FILENAME   40
+#define AUTOEXEC_FORMAT_SUCCESS        41
 
 
 
@@ -50,6 +56,7 @@ static g_iLastAppendResult;
 
 
 
+
 /**
  * Returns the last result from the parser
  *
@@ -59,6 +66,7 @@ stock AutoExecConfig_GetFindResult()
 {
 	return g_iLastFindResult;
 }
+
 
 
 
@@ -80,14 +88,50 @@ stock AutoExecConfig_GetAppendResult()
 /**
  * Set the global autoconfigfile used by functions of this file
  *
- * @param format		Formatting rules..
+ * @param format		Formatting rules.
  * @param ...			Variable number of format parameters.
- * @noreturn
+ * @return				True if formatter returned success, false otherwise.
 */
 stock AutoExecConfig_SetFile(String:format[], any:...)
 {
 	VFormat(g_sConfigFile, sizeof(g_sConfigFile), format, 2);
+	
+	
+	// Format the filename
+	return AutoExecConfig_FormatFileName(g_sConfigFile, sizeof(g_sConfigFile)) == AUTOEXEC_FORMAT_SUCCESS;
 }
+
+
+
+
+
+
+/**
+ * Get the formatted autoconfigfile used by functions of this file
+ *
+ * @param buffer		String to format.
+ * @param size			Maximum size of buffer
+ * @return				True if filename was set, false otherwise.
+*/
+stock AutoExecConfig_GetFile(String:buffer[], size)
+{
+	if(strlen(g_sConfigFile) > 0)
+	{
+		strcopy(buffer, size, g_sConfigFile);
+		
+		return true;
+	}
+	
+	// Security for decl users
+	if(strlen(buffer) < 1)
+	{
+		buffer[0] = '\0';
+	}
+	
+	return false;
+}
+
+
 
 
 
@@ -107,7 +151,7 @@ stock AutoExecConfig_SetFile(String:format[], any:...)
  * @return				A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
  * @error				Convar name is blank or is the same as an existing console command.
 */
-Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValue[], const String:description[]="", flags=0, bool:hasMin=false, Float:min=0.0, bool:hasMax=false, Float:max=0.0)
+stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValue[], const String:description[]="", flags=0, bool:hasMin=false, Float:min=0.0, bool:hasMax=false, Float:max=0.0)
 {
 	// If configfile was set
 	if(!(flags & FCVAR_DONTRECORD) && strlen(g_sConfigFile) > 0)
@@ -125,9 +169,61 @@ Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValu
 		}
 	}
 	
+	
 	// Create the convar
 	return CreateConVar(name, defaultValue, description, flags, hasMin, min, hasMax, max);
 }
+
+
+
+
+
+
+/**
+ * Formats a autoconfigfile, prefixes path and adds .cfg extension if missed
+ *
+ * @param buffer		String to format.
+ * @param size			Maximum size of buffer.
+ * @return				Returns one of the AUTOEXEC_FORMAT values..
+*/
+stock AutoExecConfig_FormatFileName(String:buffer[], size)
+{
+	// Security for decl users
+	if(strlen(buffer) < 1)
+	{
+		buffer[0] = '\0';
+	}
+	
+	
+	// No config set
+	if(strlen(g_sConfigFile) < 1)
+	{
+		return AUTOEXEC_NO_CONFIG;
+	}
+	
+	
+	// Can't be an cfgfile
+	if(StrContains(g_sConfigFile, ".cfg") == -1 && strlen(g_sConfigFile) < 4)
+	{
+		return AUTOEXEC_FORMAT_BAD_FILENAME;
+	}
+	
+	
+	decl String:filebuffer[PLATFORM_MAX_PATH] = "cfg/sourcemod/";
+	StrCat(filebuffer, sizeof(filebuffer), g_sConfigFile);
+	
+	
+	// Add .cfg extension if missed
+	if(StrContains(filebuffer[strlen(filebuffer) - 4], ".cfg") != 0)
+	{
+		StrCat(filebuffer, sizeof(filebuffer), ".cfg");
+	}
+	
+	strcopy(buffer, size, filebuffer);
+	
+	return AUTOEXEC_FORMAT_SUCCESS;
+}
+
 
 
 
@@ -155,22 +251,8 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	}
 	
 	
-	// Can't be an cfgfile
-	if(StrContains(g_sConfigFile, ".cfg") == -1 && strlen(g_sConfigFile) < 4)
-	{
-		return AUTOEXEC_APPEND_BAD_FILENAME;
-	}
-	
-	
-	decl String:filebuffer[PLATFORM_MAX_PATH] = "cfg/sourcemod/";
-	StrCat(filebuffer, sizeof(filebuffer), g_sConfigFile);
-	
-	
-	// Add .cfg extension if missed
-	if(StrContains(filebuffer[strlen(filebuffer) - 4], ".cfg") != 0)
-	{
-		StrCat(filebuffer, sizeof(filebuffer), ".cfg");
-	}
+	decl String:filebuffer[PLATFORM_MAX_PATH];
+	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
 	
 	
 	//PrintToServer("pathbuffer: %s", filebuffer);
@@ -198,8 +280,8 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		WriteFileLine(hfile, buffer);
 		
 		
-		Format(buffer, sizeof(buffer), "// -");
-		WriteFileLine(hfile, buffer);
+		// Descspacer
+		WriteFileLine(hfile, "// -");
 		
 		
 		// Default
@@ -232,7 +314,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		
 		
 		// Clean up the file
-		AutoExecConfig_CleanFile(filebuffer);
+		//AutoExecConfig_CleanFile(filebuffer, false);
 		
 		
 		return AUTOEXEC_APPEND_SUCCESS;
@@ -264,22 +346,9 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 	}
 	
 	
-	// Can't be an cfgfile
-	if(StrContains(g_sConfigFile, ".cfg") == -1 && strlen(g_sConfigFile) < 4)
-	{
-		return AUTOEXEC_APPEND_BAD_FILENAME;
-	}
+	decl String:filebuffer[PLATFORM_MAX_PATH];
+	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
 	
-	
-	decl String:filebuffer[PLATFORM_MAX_PATH] = "cfg/sourcemod/";
-	StrCat(filebuffer, sizeof(filebuffer), g_sConfigFile);
-	
-	
-	// Add .cfg extension if missed
-	if(StrContains(filebuffer[strlen(filebuffer) - 4], ".cfg") != 0)
-	{
-		StrCat(filebuffer, sizeof(filebuffer), ".cfg");
-	}
 	
 	
 	//PrintToServer("pathbuffer: %s", filebuffer);
@@ -360,19 +429,28 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 
 
 
+
 /**
  * Accepts a preformatted path to the the global autoconfigfile and cleans it from too much spaces
  *
  * @param sfile				Path to autoconfigfile.
  * @return					True if cleaned, false otherwise.
 */
-AutoExecConfig_CleanFile(String:sfile[])
+stock AutoExecConfig_CleanFile(String:sfile[])
 {
+	// Security for decl users
+	if(strlen(sfile) < 1)
+	{
+		sfile[0] = '\0';
+	}
+	
+	
 	// Security
 	if(!FileExists(sfile))
 	{
 		return AUTOEXEC_CLEAN_FILE_NOT_FOUND;
 	}
+	
 	
 	
 	decl String:sfile2[PLATFORM_MAX_PATH];
@@ -450,6 +528,7 @@ AutoExecConfig_CleanFile(String:sfile[])
 	
 	return AUTOEXEC_CLEAN_SUCCESS;
 }
+
 
 
 
