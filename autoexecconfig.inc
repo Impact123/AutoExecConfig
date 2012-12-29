@@ -43,6 +43,39 @@ static String:g_sConfigFile[PLATFORM_MAX_PATH];
 
 
 
+// Workaround for now
+static g_iLastFindResult;
+static g_iLastAppendResult;
+
+
+
+
+/**
+ * Returns the last result from the parser
+ *
+ * @return			Returns one of the AUTOEXEC_FIND values or -1 if not set
+*/
+stock AutoExecConfig_GetFindResult()
+{
+	return g_iLastFindResult;
+}
+
+
+
+
+/**
+ * Returns the last result from the appender
+ *
+ * @return			Returns one of the AUTOEXEC_APPEND values or -1 if not set
+*/
+stock AutoExecConfig_GetAppendResult()
+{
+	return g_iLastAppendResult;
+}
+
+
+
+
 
 /**
  * Set the global autoconfigfile used by functions of this file
@@ -79,11 +112,16 @@ Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValu
 	// If configfile was set
 	if(!(flags & FCVAR_DONTRECORD) && strlen(g_sConfigFile) > 0)
 	{
+		// Reset the results
+		g_iLastFindResult = -1;
+		g_iLastAppendResult = -1;
+		
+		
 		// Add it if not found
 		decl String:buffer[64];
-		if(AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true) == AUTOEXEC_FIND_NOT_FOUND)
+		if( ( g_iLastFindResult = AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true) ) == AUTOEXEC_FIND_NOT_FOUND)
 		{
-			AutoExecConfig_AppendValue(name, defaultValue, description, flags, hasMin, min, hasMax, max);
+			g_iLastAppendResult = AutoExecConfig_AppendValue(name, defaultValue, description, flags, hasMin, min, hasMax, max);
 		}
 	}
 	
@@ -156,7 +194,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		
 		
 		// Desc
-		Format(buffer, sizeof(buffer), "// %s", defaultValue);
+		Format(buffer, sizeof(buffer), "// %s", description);
 		WriteFileLine(hfile, buffer);
 		
 		
