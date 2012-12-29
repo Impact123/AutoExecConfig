@@ -10,24 +10,31 @@
 
 
 // Append
-#define AUTOEXEC_APPEND_BAD_FILENAME   0
-#define AUTOEXEC_APPEND_FILE_NOT_FOUND 1
-#define AUTOEXEC_APPEND_BAD_HANDLE     2
-#define AUTOEXEC_APPEND_SUCCESS        3
+#define AUTOEXEC_APPEND_BAD_FILENAME    0
+#define AUTOEXEC_APPEND_FILE_NOT_FOUND  1
+#define AUTOEXEC_APPEND_BAD_HANDLE      2
+#define AUTOEXEC_APPEND_SUCCESS         3
 
 
 
 // Find
-#define AUTOEXEC_FIND_BAD_FILENAME    10
-#define AUTOEXEC_FIND_FILE_NOT_FOUND  11
-#define AUTOEXEC_FIND_BAD_HANDLE      12
-#define AUTOEXEC_FIND_NOT_FOUND       13
-#define AUTOEXEC_FIND_SUCCESS         14
+#define AUTOEXEC_FIND_BAD_FILENAME     10
+#define AUTOEXEC_FIND_FILE_NOT_FOUND   11
+#define AUTOEXEC_FIND_BAD_HANDLE       12
+#define AUTOEXEC_FIND_NOT_FOUND        13
+#define AUTOEXEC_FIND_SUCCESS          14
+
+
+
+// Clean
+#define AUTOEXEC_CLEAN_FILE_NOT_FOUND  20
+#define AUTOEXEC_CLEAN_BAD_HANDLE      21
+#define AUTOEXEC_CLEAN_SUCCESS         31
 
 
 
 // General
-#define AUTOEXEC_NO_CONFIG            20
+#define AUTOEXEC_NO_CONFIG             30
 
 
 
@@ -321,9 +328,13 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
  * @param sfile				Path to autoconfigfile.
  * @return					True if cleaned, false otherwise.
 */
-bool:AutoExecConfig_CleanFile(String:sfile[])
+AutoExecConfig_CleanFile(String:sfile[])
 {
-	// Add fileexistence - checks for later use
+	// Security
+	if(!FileExists(sfile))
+	{
+		return AUTOEXEC_CLEAN_FILE_NOT_FOUND;
+	}
 	
 	
 	decl String:sfile2[PLATFORM_MAX_PATH];
@@ -356,7 +367,7 @@ bool:AutoExecConfig_CleanFile(String:sfile[])
 			CloseHandle(hfile1);
 		}
 		
-		return false;
+		return AUTOEXEC_CLEAN_BAD_HANDLE;
 	}
 	
 	
@@ -399,7 +410,7 @@ bool:AutoExecConfig_CleanFile(String:sfile[])
 	DeleteFile(sfile);
 	RenameFile(sfile, sfile2);
 	
-	return true;
+	return AUTOEXEC_CLEAN_SUCCESS;
 }
 
 
