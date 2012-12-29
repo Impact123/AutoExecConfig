@@ -431,18 +431,21 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 
 
 /**
- * Accepts a preformatted path to the the global autoconfigfile and cleans it from too much spaces
+ * Cleans the global autoconfigfile from too much spaces
  *
- * @param sfile				Path to autoconfigfile.
- * @return					True if cleaned, false otherwise.
+ * @return					One of the AUTOEXEC_CLEAN values.
 */
-stock AutoExecConfig_CleanFile(String:sfile[])
+stock AutoExecConfig_CleanFile()
 {
-	// Security for decl users
-	if(strlen(sfile) < 1)
+	// No config set
+	if(strlen(g_sConfigFile) < 1)
 	{
-		sfile[0] = '\0';
+		return AUTOEXEC_NO_CONFIG;
 	}
+	
+	
+	decl String:sfile[PLATFORM_MAX_PATH];
+	strcopy(sfile, sizeof(sfile), g_sConfigFile);
 	
 	
 	// Security
