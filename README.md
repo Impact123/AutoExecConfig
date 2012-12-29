@@ -43,6 +43,11 @@ In order to use this include it would simply have to be changed to this:
 		AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
 		
 		AutoExecConfig(true, "plugin.myplugin");
+		
+		// Cleaning is an expensive operation and should only be done once
+		decl String:sfile[PLATFORM_MAX_PATH];
+		AutoExecConfig_GetFile(sfile, sizeof(sfile));
+		AutoExecConfig_CleanFile(sfile);
 	}
     
 ## Notes
