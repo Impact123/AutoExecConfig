@@ -26,25 +26,39 @@ public OnPluginStart()
 	StartProfiling(g_hProf);
 	
 	
+	new bool:appended;
+	
+	
 	// Set file
 	AutoExecConfig_SetFile("autoexecconfigtest");
 	
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
-	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	SetAppend(appended);
 	
 	AutoExecConfig_CreateConVar("listme2", "Anothervalue", "An other description");
-	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	SetAppend(appended);
 	
 	AutoExecConfig_CreateConVar("boundtest", "Anothervaluetoo", "Cvar for boundtest", FCVAR_PLUGIN, true, 5.0, true, 10.0);
-	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	SetAppend(appended);
 	
 	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_PLUGIN, false, 0.0, true, 12.5);
-	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	SetAppend(appended);
 
-	
+
 	AutoExecConfig(true, "autoexecconfigtest");
 	
+	
+	
+	// Cleaning is expensive
+	if(appended)
+	{
+		decl String:sfile[PLATFORM_MAX_PATH];
+		AutoExecConfig_GetFile(sfile, sizeof(sfile));
+		AutoExecConfig_CleanFile(sfile);
+	}
+	
+
 
 	StopProfiling(g_hProf);
 	
@@ -52,6 +66,16 @@ public OnPluginStart()
 	PrintToServer("Benchmark: %f seconds, %f milliseconds", fProfilerTime, fProfilerTime * 1000);
 	PrintToServer("Benchmark needed approximately %f %% of 1 Second", CalculateFloatPercentage(fProfilerTime, 0.01));
 	PrintToServer("Benchmark needed approximately %f %% of 1 Frame", CalculateFloatPercentage(fProfilerTime, 0.01 / 66.7));
+}
+
+
+
+SetAppend(&appended)
+{
+	if(AutoExecConfig_GetAppendResult() == AUTOEXEC_APPEND_SUCCESS)
+	{
+		appended = true;
+	}
 }
 
 
