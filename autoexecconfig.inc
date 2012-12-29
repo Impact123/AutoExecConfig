@@ -12,8 +12,8 @@
 // Append
 #define AUTOEXEC_APPEND_BAD_FILENAME   0
 #define AUTOEXEC_APPEND_FILE_NOT_FOUND 1
-#define AUTOEXEC_APPEND_BAD_HANDLE     3
-#define AUTOEXEC_APPEND_SUCCESS        4
+#define AUTOEXEC_APPEND_BAD_HANDLE     2
+#define AUTOEXEC_APPEND_SUCCESS        3
 
 
 
@@ -73,7 +73,7 @@ Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValu
 	if(!(flags & FCVAR_DONTRECORD) && strlen(g_sConfigFile) > 0)
 	{
 		// Add it if not found
-		decl String:buffer[256];
+		decl String:buffer[64];
 		if(AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true) == AUTOEXEC_FIND_NOT_FOUND)
 		{
 			AutoExecConfig_AppendValue(name, defaultValue, description, flags, hasMin, min, hasMax, max);
@@ -135,7 +135,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "a");
-		decl String:buffer[256];
+		decl String:buffer[64];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -153,7 +153,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		WriteFileLine(hfile, buffer);
 		
 		
-		Format(buffer, sizeof(buffer), "// -", description);
+		Format(buffer, sizeof(buffer), "// -");
 		WriteFileLine(hfile, buffer);
 		
 		
@@ -207,7 +207,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
  * @param cvar				Cvar to search for.
  * @param value				Buffer to store result into.
  * @param size				Maximum size of buffer.
- * @param caseSensitive		Whether or not the search hould be case sensitive.
+ * @param caseSensitive		Whether or not the search should be case sensitive.
  * @return					Returns one of the AUTOEXEC_FIND values
 */
 stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:caseSensitive=false)
@@ -244,8 +244,8 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "r");
-		decl String:readbuffer[64];
-		decl String:copybuffer[64];
+		decl String:readbuffer[128];
+		decl String:copybuffer[128];
 		new index;
 		
 		
@@ -330,7 +330,7 @@ bool:AutoExecConfig_CleanFile(String:sfile[])
 	Format(sfile2, sizeof(sfile2), "%s_tempcopy", sfile);
 	
 	
-	decl String:readbuffer[64];
+	decl String:readbuffer[128];
 	new count;
 	new bool:firstreached;
 	
