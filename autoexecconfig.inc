@@ -1,7 +1,7 @@
 #if defined _autoexecconfig_included
 	#endinput
 #endif
-#define _basics_clients_included
+#define _autoexecconfig_included
 
 
 #include <sourcemod>
