@@ -11,7 +11,7 @@ I have tried to write it performant aswell as secure, but it currently hasn't be
 ## How does it work?
 If you add an convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you set before.  
 If it can't be found within the file it will add it with the informations you created the convar with.  
-After that the file will be cleaned from unneccessary whitespaces created by user or autoexecconfig itself.  
+After that the file should be cleaned from unneccessary whitespaces created by user or autoexecconfig itself.  
 
 
 
@@ -44,10 +44,8 @@ In order to use this include it would simply have to be changed to this:
 		
 		AutoExecConfig(true, "plugin.myplugin");
 		
-		// Cleaning is an expensive operation and should only be done once
-		decl String:sfile[PLATFORM_MAX_PATH];
-		AutoExecConfig_GetFile(sfile, sizeof(sfile));
-		AutoExecConfig_CleanFile(sfile);
+		// Cleaning is an expensive operation and should be done at the end
+		AutoExecConfig_CleanFile();
 	}
     
 ## Notes
