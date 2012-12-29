@@ -31,9 +31,16 @@ public OnPluginStart()
 	
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
+	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	
 	AutoExecConfig_CreateConVar("listme2", "Anothervalue", "An other description");
+	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	
 	AutoExecConfig_CreateConVar("boundtest", "Anothervaluetoo", "Cvar for boundtest", FCVAR_PLUGIN, true, 5.0, true, 10.0);
+	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
+	
 	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_PLUGIN, false, 0.0, true, 12.5);
+	PrintToServer("Findres: %d, Appendres: %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
 
 	
 	AutoExecConfig(true, "autoexecconfigtest");
