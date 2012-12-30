@@ -153,7 +153,7 @@ stock AutoExecConfig_GetFile(String:buffer[], size)
 */
 stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValue[], const String:description[]="", flags=0, bool:hasMin=false, Float:min=0.0, bool:hasMax=false, Float:max=0.0)
 {
-	// If configfile was set
+	// If configfile was set and convar has no dontrecord flag
 	if(!(flags & FCVAR_DONTRECORD) && strlen(g_sConfigFile) > 0)
 	{
 		// Reset the results
@@ -262,7 +262,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "a");
-		decl String:buffer[64];
+		decl String:writebuffer[64];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -276,8 +276,8 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		
 		
 		// Desc
-		Format(buffer, sizeof(buffer), "// %s", description);
-		WriteFileLine(hfile, buffer);
+		Format(writebuffer, sizeof(writebuffer), "// %s", description);
+		WriteFileLine(hfile, writebuffer);
 		
 		
 		// Descspacer
@@ -285,29 +285,29 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		
 		
 		// Default
-		Format(buffer, sizeof(buffer), "// Default: \"%s\"", defaultValue);
-		WriteFileLine(hfile, buffer);
+		Format(writebuffer, sizeof(writebuffer), "// Default: \"%s\"", defaultValue);
+		WriteFileLine(hfile, writebuffer);
 		
 		
 		// Minimum
 		if(hasMin)
 		{		
-			Format(buffer, sizeof(buffer), "// Minimum: \"%f\"", min);
-			WriteFileLine(hfile, buffer);
+			Format(writebuffer, sizeof(writebuffer), "// Minimum: \"%f\"", min);
+			WriteFileLine(hfile, writebuffer);
 		}
 		
 		
 		// Maximum
 		if(hasMax)
 		{
-			Format(buffer, sizeof(buffer), "// Maximum: \"%f\"", max);
-			WriteFileLine(hfile, buffer);
+			Format(writebuffer, sizeof(writebuffer), "// Maximum: \"%f\"", max);
+			WriteFileLine(hfile, writebuffer);
 		}
 		
 		
 		// Write end and defaultvalue
-		Format(buffer, sizeof(buffer), "%s \"%s\"", name, defaultValue);
-		WriteFileLine(hfile, buffer);
+		Format(writebuffer, sizeof(writebuffer), "%s \"%s\"", name, defaultValue);
+		WriteFileLine(hfile, writebuffer);
 		
 		
 		CloseHandle(hfile);
@@ -339,6 +339,13 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 */
 stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:caseSensitive=false)
 {
+	// Security for decl users
+	if(strlen(value) < 1)
+	{
+		value[0] = '\0';
+	}
+	
+	
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
 	{
@@ -498,7 +505,7 @@ stock AutoExecConfig_CleanFile()
 		{
 			count++;
 		}
-		// No space, begin from start
+		// No space, count from start
 		else
 		{
 			count = 0;
