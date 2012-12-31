@@ -49,7 +49,7 @@ In order to use this include it would simply have to be changed to this:
 	}
     
 ## Notes
-* Don't put spaces between cvarvalues, else the validation failes which results in endless appending.
-* The search by default is case sensitive.
+* The parser will ignore spaces between cvars and values, inside values or behind values for security.  
+* The search of the parser by default is case sensitive.
 * Convars with a FCVAR_DONTRECORD flag will be skipped by the appender.
 * The cleaner will format your file the way autoexecconfig does, 2 spaces after informations, 1 after cvars.
