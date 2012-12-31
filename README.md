@@ -3,20 +3,20 @@ An includefile to read and append to autoconfigs created by sourcemod.
 
 
 ## Warning
-This currently is pretty much hacked together and should be considered a beta or proof of concept.  
-I have tried to write it performant aswell as secure, but it currently hasn't been reviewed or tested enough.  
+This should be considered a beta or proof of concept at this time.  
+I have tried to write it performant aswell as secure, it seems stable but it hasn't been tested enough.  
 **No warranty is  given if it destroys something**, you have been warned.. 
 
 
 ## How does it work?
-If you add an convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you set before.  
+If you add an convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you have set before.  
 If it can't be found within the file it will add it with the informations you created the convar with.  
 After that the file should be cleaned from unneccessary whitespaces created by user or autoexecconfig itself.  
 
 
 
 ## Implementing
-The include was wrote it in a way that only the used command must be changed in order to use it.  
+One thing i had in mind while writing this was easy implementation, for basic usage you only have to add 2 lines and rename the command you create your convars with.  
 
 ### An example
 
@@ -49,5 +49,7 @@ In order to use this include it would simply have to be changed to this:
 	}
     
 ## Notes
-* Don't put spaces between cvarvalues, else the validation failes which results in endless appending
-* The search by default is case sensitive
+* Don't put spaces between cvarvalues, else the validation failes which results in endless appending.
+* The search by default is case sensitive.
+* Convars with a FCVAR_DONTRECORD flag will be skipped by the appender.
+* The cleaner will format your file the way autoexecconfig does, 2 spaces after informations, 1 after cvars.
