@@ -209,11 +209,18 @@ stock AutoExecConfig_FormatFileName(String:buffer[], size)
 	}
 	
 	
-	decl String:filebuffer[PLATFORM_MAX_PATH] = "cfg/sourcemod/";
+	decl String:filebuffer[PLATFORM_MAX_PATH];
+	
+	// Add path if file doesn't begin with it
+	if(StrContains(buffer, "cfg/sourcemod/") != 0)
+	{
+		StrCat(filebuffer, sizeof(filebuffer), "cfg/sourcemod/");
+	}
+	
 	StrCat(filebuffer, sizeof(filebuffer), g_sConfigFile);
 	
 	
-	// Add .cfg extension if missed
+	// Add .cfg extension if file doesn't end with it
 	if(StrContains(filebuffer[strlen(filebuffer) - 4], ".cfg") != 0)
 	{
 		StrCat(filebuffer, sizeof(filebuffer), ".cfg");
