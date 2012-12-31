@@ -186,7 +186,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
  * @param size			Maximum size of buffer.
  * @return				Returns one of the AUTOEXEC_FORMAT values..
 */
-stock AutoExecConfig_FormatFileName(String:buffer[], size)
+stock static AutoExecConfig_FormatFileName(String:buffer[], size)
 {
 	// Security for decl users
 	if(strlen(buffer) < 1)
@@ -210,6 +210,7 @@ stock AutoExecConfig_FormatFileName(String:buffer[], size)
 	
 	
 	decl String:filebuffer[PLATFORM_MAX_PATH];
+	filebuffer[0] = '\0';
 	
 	// Add path if file doesn't begin with it
 	if(StrContains(buffer, "cfg/sourcemod/") != 0)
@@ -372,9 +373,13 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "r");
-		decl String:readbuffer[128];
-		decl String:copybuffer[128];
-		new index;
+		new valuestart;
+		new valueend;
+		new cvarend;
+		decl String:sConvar[32];
+		decl String:sValue[32];
+		decl String:readbuffer[64];
+		decl String:copybuffer[64];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -392,39 +397,70 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 			}
 			
 			
-			// Has too much spaces
-			if(GetSpacesInStr(readbuffer) != 1)
+			// Has not enough spaces, must have at least 1
+			if(GetSpacesInStr(readbuffer) < 1)
 			{
 				continue;
 			}
 
 			
-			ReplaceString(readbuffer, sizeof(readbuffer), "\"", "");
-			
-			
-			// Has no value
-			if( (index = StrContains(readbuffer, " ")) == -1 )
+			// Ignore cvars which aren't quoted
+			if(GetQuotesInStr(readbuffer) != 2)
 			{
 				continue;
 			}
 			
 			
-			// Space is the last char, must have wrote this with something in mind i can't remember
-			if(index > strlen(readbuffer)+1)
+			
+			// Get the start of the value
+			if( (valuestart = StrContains(readbuffer, "\"")) == -1 )
 			{
 				continue;
 			}
 			
 			
+			// Get the end of the value
+			if( (valueend = StrContains(readbuffer[valuestart+1], "\"")) == -1 )
+			{
+				continue;
+			}
+			
+			
+			// Get the start of the cvar, 
+			if( (cvarend = StrContains(readbuffer, " ")) == -1 || cvarend >= valuestart)
+			{
+				continue;
+			}
+			
+			
+			// Skip if cvarendindex is before valuestartindex
+			if(cvarend >= valuestart)
+			{
+				continue;
+			}
+			
+			
+			// Convar
+			// Tempcopy for security
 			strcopy(copybuffer, sizeof(copybuffer), readbuffer);
-			copybuffer[index] = '\0';
+			copybuffer[cvarend] = '\0';
+			
+			strcopy(sConvar, sizeof(sConvar), copybuffer);
+			
+
+			// Value
+			// Tempcopy for security
+			strcopy(copybuffer, sizeof(copybuffer), readbuffer[valuestart+1]);
+			copybuffer[valueend] = '\0';
+			
+			strcopy(sValue, sizeof(sValue), copybuffer);
 			
 			
-			//PrintToServer("Cvar %s has a value of %s", copybuffer, readbuffer[index +1]);
+			//PrintToServer("Cvar %s has a value of %s", sConvar, sValue);
 			
-			if(StrEqual(copybuffer, cvar, caseSensitive))
+			if(StrEqual(sConvar, cvar, caseSensitive))
 			{
-				Format(value, size, "%s", readbuffer[index +1]);
+				Format(value, size, "%s", sConvar);
 				
 				CloseHandle(hfile);
 				return AUTOEXEC_FIND_SUCCESS;
@@ -557,7 +593,7 @@ stock AutoExecConfig_CleanFile()
  * @param str		String to search for in.
  * @return			Count of spaces found.
 */
-stock GetSpacesInStr(String:str[])
+stock static GetSpacesInStr(String:str[])
 {
 	new len = strlen(str);
 	new count;
@@ -565,6 +601,30 @@ stock GetSpacesInStr(String:str[])
 	for(new i; i < len; i++)
 	{
 		if(str[i] == ' ')
+		{
+			count++;
+		}
+	}
+	
+	return count;
+}
+
+
+
+/**
+ * Returns how much quotes are found within a given string
+ *
+ * @param str		String to search for in.
+ * @return			Count of quotes found.
+*/
+stock static GetQuotesInStr(String:str[])
+{
+	new len = strlen(str);
+	new count;
+	
+	for(new i; i < len; i++)
+	{
+		if(str[i] == '\"')
 		{
 			count++;
 		}
