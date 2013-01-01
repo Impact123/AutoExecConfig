@@ -123,10 +123,7 @@ stock AutoExecConfig_GetFile(String:buffer[], size)
 	}
 	
 	// Security for decl users
-	if(strlen(buffer) < 1)
-	{
-		buffer[0] = '\0';
-	}
+	buffer[0] = '\0';
 	
 	return false;
 }
@@ -189,10 +186,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
 stock static AutoExecConfig_FormatFileName(String:buffer[], size)
 {
 	// Security for decl users
-	if(strlen(buffer) < 1)
-	{
-		buffer[0] = '\0';
-	}
+	buffer[0] = '\0';
 	
 	
 	// No config set
@@ -348,10 +342,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:caseSensitive=false)
 {
 	// Security for decl users
-	if(strlen(value) < 1)
-	{
-		value[0] = '\0';
-	}
+	value[0] = '\0';
 	
 	
 	// No config set
