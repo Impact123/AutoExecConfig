@@ -185,10 +185,6 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
 */
 stock static AutoExecConfig_FormatFileName(String:buffer[], size)
 {
-	// Security for decl users
-	buffer[0] = '\0';
-	
-	
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
 	{
