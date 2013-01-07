@@ -363,11 +363,12 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 		new valuestart;
 		new valueend;
 		new cvarend;
-		decl String:sConvar[32];
-		decl String:sValue[32];
-		decl String:readbuffer[64];
-		decl String:copybuffer[64];
 		
+		// Just an reminder to self, leave the values that high
+		decl String:sConvar[64];
+		decl String:sValue[64];
+		decl String:readbuffer[128];
+		decl String:copybuffer[128];
 		
 		if(hfile == INVALID_HANDLE)
 		{
