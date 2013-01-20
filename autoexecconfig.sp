@@ -29,8 +29,8 @@ public OnPluginStart()
 	new bool:appended;
 	
 	
-	// Set file
-	AutoExecConfig_SetFile("autoexecconfigtest");
+	// Set file, second parameter is optional and defaults to sourcemod
+	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
 	
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
@@ -43,6 +43,9 @@ public OnPluginStart()
 	SetAppend(appended);
 	
 	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_PLUGIN, false, 0.0, true, 12.5);
+	SetAppend(appended);
+	
+	AutoExecConfig_CreateConVar("LongDescriptionTest", "LongDescxyz", "Really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long description", FCVAR_PLUGIN, false, 4.0, true, 53.5);
 	SetAppend(appended);
 
 
