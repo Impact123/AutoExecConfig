@@ -88,8 +88,8 @@ stock AutoExecConfig_GetAppendResult()
 /**
  * Set the global autoconfigfile used by functions of this file
  *
- * @param format		Formatting rules.
- * @param ...			Variable number of format parameters.
+ * @param file			Name of the config file, path and .cfg extension is being added if not given.
+ * @param folder		Folder under cfg/ to use.  By default this is "sourcemod."
  * @return				True if formatter returned success, false otherwise.
 */
 stock AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
