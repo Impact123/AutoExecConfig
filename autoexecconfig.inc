@@ -92,13 +92,13 @@ stock AutoExecConfig_GetAppendResult()
  * @param ...			Variable number of format parameters.
  * @return				True if formatter returned success, false otherwise.
 */
-stock AutoExecConfig_SetFile(String:format[], any:...)
+stock AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
 {
-	VFormat(g_sConfigFile, sizeof(g_sConfigFile), format, 2);
+	Format(g_sConfigFile, sizeof(g_sConfigFile), "%s", file);
 	
 	
 	// Format the filename
-	return AutoExecConfig_FormatFileName(g_sConfigFile, sizeof(g_sConfigFile)) == AUTOEXEC_FORMAT_SUCCESS;
+	return AutoExecConfig_FormatFileName(g_sConfigFile, sizeof(g_sConfigFile), folder) == AUTOEXEC_FORMAT_SUCCESS;
 }
 
 
@@ -183,7 +183,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
  * @param size			Maximum size of buffer.
  * @return				Returns one of the AUTOEXEC_FORMAT values..
 */
-stock static AutoExecConfig_FormatFileName(String:buffer[], size)
+stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[])
 {
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
@@ -199,13 +199,25 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size)
 	}
 	
 	
+	// Pathprefix
+	decl String:pathprefixbuffer[256];
+	if(strlen(folder) > 0)
+	{
+		Format(pathprefixbuffer, sizeof(pathprefixbuffer), "cfg/%s/", folder);
+	}
+	else
+	{
+		Format(pathprefixbuffer, sizeof(pathprefixbuffer), "cfg/");
+	}
+	
+	
 	decl String:filebuffer[PLATFORM_MAX_PATH];
 	filebuffer[0] = '\0';
 	
 	// Add path if file doesn't begin with it
-	if(StrContains(buffer, "cfg/sourcemod/") != 0)
+	if(StrContains(buffer, pathprefixbuffer) != 0)
 	{
-		StrCat(filebuffer, sizeof(filebuffer), "cfg/sourcemod/");
+		StrCat(filebuffer, sizeof(filebuffer), pathprefixbuffer);
 	}
 	
 	StrCat(filebuffer, sizeof(filebuffer), g_sConfigFile);
@@ -260,7 +272,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "a");
-		decl String:writebuffer[64];
+		decl String:writebuffer[256];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -498,7 +510,7 @@ stock AutoExecConfig_CleanFile()
 	Format(sfile2, sizeof(sfile2), "%s_tempcopy", sfile);
 	
 	
-	decl String:readbuffer[128];
+	decl String:readbuffer[256];
 	new count;
 	new bool:firstreached;
 	
