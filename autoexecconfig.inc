@@ -183,7 +183,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
  * @param size			Maximum size of buffer.
  * @return				Returns one of the AUTOEXEC_FORMAT values..
 */
-stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[])
+stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[]="sourcemod")
 {
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
