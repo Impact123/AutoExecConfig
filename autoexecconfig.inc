@@ -530,10 +530,10 @@ stock AutoExecConfig_CleanFile()
 			CloseHandle(hfile1);
 		}
 		
-		if(hfile1 != INVALID_HANDLE)
+		if(hfile2 != INVALID_HANDLE)
 		{
 			//PrintToServer("Handle2 invalid");
-			CloseHandle(hfile1);
+			CloseHandle(hfile2);
 		}
 		
 		return AUTOEXEC_CLEAN_BAD_HANDLE;
