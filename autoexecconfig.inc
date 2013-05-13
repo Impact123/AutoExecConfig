@@ -200,7 +200,7 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[
 	
 	
 	// Pathprefix
-	decl String:pathprefixbuffer[256];
+	decl String:pathprefixbuffer[PLATFORM_MAX_PATH];
 	if(strlen(folder) > 0)
 	{
 		Format(pathprefixbuffer, sizeof(pathprefixbuffer), "cfg/%s/", folder);
@@ -272,7 +272,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	if(FileExists(filebuffer))
 	{
 		new Handle:hfile = OpenFile(filebuffer, "a");
-		decl String:writebuffer[256];
+		decl String:writebuffer[2048];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -379,8 +379,8 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 		// Just an reminder to self, leave the values that high
 		decl String:sConvar[64];
 		decl String:sValue[64];
-		decl String:readbuffer[128];
-		decl String:copybuffer[128];
+		decl String:readbuffer[2048];
+		decl String:copybuffer[2048];
 		
 		if(hfile == INVALID_HANDLE)
 		{
@@ -510,7 +510,7 @@ stock AutoExecConfig_CleanFile()
 	Format(sfile2, sizeof(sfile2), "%s_tempcopy", sfile);
 	
 	
-	decl String:readbuffer[256];
+	decl String:readbuffer[2048];
 	new count;
 	new bool:firstreached;
 	
