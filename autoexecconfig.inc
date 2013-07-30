@@ -285,9 +285,31 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		WriteFileLine(hfile, "\n");
 		
 		
-		// Desc
-		Format(writebuffer, sizeof(writebuffer), "// %s", description);
-		WriteFileLine(hfile, writebuffer);
+
+		
+		
+		// This is used for multiline comments
+		new newlines = GetCharCountInStr('\n', description);
+		if(newlines == 0)
+		{
+			// We have no newlines, we can write the description to the file as is
+			Format(writebuffer, sizeof(writebuffer), "// %s", description);
+			WriteFileLine(hfile, writebuffer);
+		}
+		else
+		{
+			new String:newlineBuf[newlines +1][2048];
+			ExplodeString(description, "\n", newlineBuf, newlines +1, sizeof(newlineBuf[]), false);
+			
+			// Each newline gets a commented newline
+			for(new i; i <= newlines; i++)
+			{
+				if(strlen(newlineBuf[i]) > 0)
+				{
+					WriteFileLine(hfile, "// %s", newlineBuf[i]);
+				}
+			}
+		}
 		
 		
 		// Descspacer
@@ -398,14 +420,14 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 			
 			
 			// Has not enough spaces, must have at least 1
-			if(GetSpacesInStr(readbuffer) < 1)
+			if(GetCharCountInStr(' ', readbuffer) < 1)
 			{
 				continue;
 			}
 
 			
 			// Ignore cvars which aren't quoted
-			if(GetQuotesInStr(readbuffer) != 2)
+			if(GetCharCountInStr('"', readbuffer) != 2)
 			{
 				continue;
 			}
@@ -588,43 +610,19 @@ stock AutoExecConfig_CleanFile()
 
 
 /**
- * Returns how much spaces are found within a given string
+ * Returns how many times the given char occures in the given string.
  *
  * @param str		String to search for in.
- * @return			Count of spaces found.
+ * @return			Count of newlines found.
 */
-stock static GetSpacesInStr(String:str[])
+stock static GetCharCountInStr(character, const String:str[])
 {
 	new len = strlen(str);
 	new count;
 	
 	for(new i; i < len; i++)
 	{
-		if(str[i] == ' ')
-		{
-			count++;
-		}
-	}
-	
-	return count;
-}
-
-
-
-/**
- * Returns how much quotes are found within a given string
- *
- * @param str		String to search for in.
- * @return			Count of quotes found.
-*/
-stock static GetQuotesInStr(String:str[])
-{
-	new len = strlen(str);
-	new count;
-	
-	for(new i; i < len; i++)
-	{
-		if(str[i] == '\"')
+		if(str[i] == character)
 		{
 			count++;
 		}
