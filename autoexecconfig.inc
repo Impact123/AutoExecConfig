@@ -46,6 +46,9 @@
 
 // Global variables
 static String:g_sConfigFile[PLATFORM_MAX_PATH];
+static String:g_sRawFileName[PLATFORM_MAX_PATH];
+static String:g_sFolderPath[PLATFORM_MAX_PATH];
+
 static bool:g_bCreateFile = false;
 static Handle:g_hPluginHandle = INVALID_HANDLE;
 
@@ -142,6 +145,10 @@ stock bool:AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
 {
 	Format(g_sConfigFile, sizeof(g_sConfigFile), "%s", file);
 	
+	// Global buffers for cfg execution
+	strcopy(g_sRawFileName, sizeof(g_sRawFileName), file);
+	strcopy(g_sFolderPath, sizeof(g_sFolderPath), folder)
+	
 	
 	// Format the filename
 	return AutoExecConfig_FormatFileName(g_sConfigFile, sizeof(g_sConfigFile), folder) == AUTOEXEC_FORMAT_SUCCESS;
@@ -221,6 +228,22 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
 	return CreateConVar(name, defaultValue, description, flags, hasMin, min, hasMax, max);
 }
 
+
+
+
+/**
+ * Executes the autoconfigfile, and adds it to the OnConfigsExecuted forward.
+ * If we didn't created it already we let SourceMod create it.
+ *
+ * @param buffer		String to format.
+ * @param size			Maximum size of buffer.
+ * @return				Returns one of the AUTOEXEC_FORMAT values..
+*/
+stock AutoExecConfig_ExecuteFile()
+{
+	// Only let sourcemod create the file, if we didn't do that already. 
+	AutoExecConfig(!g_bCreateFile, g_sRawFileName, g_sFolderPath);
+}
 
 
 
