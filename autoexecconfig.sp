@@ -33,6 +33,11 @@ public OnPluginStart()
 	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
 	
 	
+	// We want to create the file if it doesn't exists already
+	// This eliminates the need to use the original AutoExecConfig function
+	AutoExecConfig_SetCreateFile(true);
+	
+	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
 	SetAppend(appended);
 	
@@ -48,7 +53,8 @@ public OnPluginStart()
 	AutoExecConfig_CreateConVar("LongDescriptionTest", "LongDescxyz", "Really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long description", FCVAR_PLUGIN, false, 4.0, true, 53.5);
 	SetAppend(appended);
 
-
+	
+	// Only needed when AutoExecConfig_SetCreateFile isn't set to true
 	AutoExecConfig(true, "autoexecconfigtest");
 	
 	
