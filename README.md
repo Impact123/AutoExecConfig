@@ -42,7 +42,7 @@ In order to use this include it would simply have to be changed to this:
 		AutoExecConfig_CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
 		AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
 		
-		AutoExecConfig(true, "plugin.myplugin");
+		AutoExecConfig_ExecuteFile();
 		
 		// Cleaning is an expensive operation and should be done at the end
 		AutoExecConfig_CleanFile();
