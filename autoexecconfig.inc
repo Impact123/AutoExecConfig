@@ -235,9 +235,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
  * Executes the autoconfigfile, and adds it to the OnConfigsExecuted forward.
  * If we didn't created it already we let SourceMod create it.
  *
- * @param buffer		String to format.
- * @param size			Maximum size of buffer.
- * @return				Returns one of the AUTOEXEC_FORMAT values..
+ * @noreturn
 */
 stock AutoExecConfig_ExecuteFile()
 {
@@ -700,7 +698,7 @@ stock AutoExecConfig_CleanFile()
  * Returns how many times the given char occures in the given string.
  *
  * @param str		String to search for in.
- * @return			Count of newlines found.
+ * @return			Occurences of the given char found in string.
 */
 stock static GetCharCountInStr(character, const String:str[])
 {
