@@ -206,7 +206,11 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
 		
 		// Add it if not found
 		decl String:buffer[64];
-		if( ( g_iLastFindResult = AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true) ) == AUTOEXEC_FIND_NOT_FOUND)
+		
+		g_iLastFindResult = AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true);
+		
+		// We only add this convar if it doesn't exist, or the file doesn't exist and it should be auto-generated
+		if(g_iLastFindResult == AUTOEXEC_FIND_NOT_FOUND || (g_iLastFindResult == AUTOEXEC_FIND_FILE_NOT_FOUND && g_bCreateFile))
 		{
 			g_iLastAppendResult = AutoExecConfig_AppendValue(name, defaultValue, description, flags, hasMin, min, hasMax, max);
 		}
