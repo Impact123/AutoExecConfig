@@ -34,7 +34,6 @@ public OnPluginStart()
 	
 	
 	// We want to create the file if it doesn't exists already
-	// This eliminates the need to use the original AutoExecConfig function
 	AutoExecConfig_SetCreateFile(true);
 	
 	
@@ -54,8 +53,8 @@ public OnPluginStart()
 	SetAppend(appended);
 
 	
-	// Only needed when AutoExecConfig_SetCreateFile isn't set to true
-	AutoExecConfig(true, "autoexecconfigtest");
+	// Execute the given config
+	AutoExecConfig_ExecuteFile();
 	
 	
 	
