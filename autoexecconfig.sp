@@ -46,6 +46,9 @@ public OnPluginStart()
 	AutoExecConfig_CreateConVar("boundtest", "Anothervaluetoo", "Cvar for boundtest", FCVAR_PLUGIN, true, 5.0, true, 10.0);
 	SetAppend(appended);
 	
+	AutoExecConfig_CreateConVar("newlinetest", "SomeCvar", "This\nIs\nA\nNewline\nTest", FCVAR_PLUGIN);
+	SetAppend(appended);
+	
 	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_PLUGIN, false, 0.0, true, 12.5);
 	SetAppend(appended);
 	
