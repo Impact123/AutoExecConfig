@@ -147,7 +147,7 @@ stock bool:AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
 	
 	// Global buffers for cfg execution
 	strcopy(g_sRawFileName, sizeof(g_sRawFileName), file);
-	strcopy(g_sFolderPath, sizeof(g_sFolderPath), folder)
+	strcopy(g_sFolderPath, sizeof(g_sFolderPath), folder);
 	
 	
 	// Format the filename
