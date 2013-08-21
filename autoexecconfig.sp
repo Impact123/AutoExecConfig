@@ -1,8 +1,8 @@
 #include <sourcemod>
 #include <profiler>
-#include "autoexecconfig"
-#pragma semicolon 1
 
+#pragma semicolon 1
+#include "autoexecconfig"
 
 
 new Handle:g_hProf;
