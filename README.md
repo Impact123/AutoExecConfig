@@ -22,31 +22,35 @@ One thing i had in mind while writing this was easy implementation, for basic us
 
 Lets assume you already wrote an plugin with some convars which might look like this.
 
-    public OnPluginStart()
-	{
-		CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
-		CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
-		CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
-		
-		AutoExecConfig(true, "plugin.myplugin");
-	}
-    
+```SourcePawn
+public OnPluginStart()
+{
+	CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
+	CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
+	CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
+	
+	AutoExecConfig(true, "plugin.myplugin");
+}
+```
+
 In order to use this include it would simply have to be changed to this:  
-    
-    public OnPluginStart()
-	{
-		// Set the file for the include
-		AutoExecConfig_SetFile("plugin.myplugin");
-		
-		AutoExecConfig_CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
-		AutoExecConfig_CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
-		AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
-		
-		AutoExecConfig_ExecuteFile();
-		
-		// Cleaning is an expensive operation and should be done at the end
-		AutoExecConfig_CleanFile();
-	}
+
+```SourcePawn
+public OnPluginStart()
+{
+	// Set the file for the include
+	AutoExecConfig_SetFile("plugin.myplugin");
+	
+	AutoExecConfig_CreateConVar("sm_myplugin_enabled", "1", "Whether or not this plugin is enabled");
+	AutoExecConfig_CreateConVar("sm_myplugin_chattrigger", "myplugin", "Chattrigger to open the menu of this plugin");
+	AutoExecConfig_CreateConVar("sm_myplugin_adminflag", "b", "Adminflag needed to use the chattrigger");
+	
+	AutoExecConfig_ExecuteFile();
+	
+	// Cleaning is an expensive operation and should be done at the end
+	AutoExecConfig_CleanFile();
+}
+```
     
 ## Notes
 * The parser will ignore spaces between cvars and values, inside values or behind values for security.  
