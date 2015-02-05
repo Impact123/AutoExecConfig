@@ -377,7 +377,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		else
 		{
 			new String:newlineBuf[newlines +1][2048];
-			ExplodeString(description, "\n", newlineBuf, newlines +1, sizeof(newlineBuf[]), false);
+			ExplodeString(description, "\n", newlineBuf, newlines +1, 2048, false);
 			
 			// Each newline gets a commented newline
 			for(new i; i <= newlines; i++)
