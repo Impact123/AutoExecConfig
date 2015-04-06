@@ -7,8 +7,6 @@
 #include <sourcemod>
 
 
-
-
 // Append
 #define AUTOEXEC_APPEND_BAD_FILENAME    0
 #define AUTOEXEC_APPEND_FILE_NOT_FOUND  1
@@ -45,18 +43,18 @@
 
 
 // Global variables
-static String:g_sConfigFile[PLATFORM_MAX_PATH];
-static String:g_sRawFileName[PLATFORM_MAX_PATH];
-static String:g_sFolderPath[PLATFORM_MAX_PATH];
+static char g_sConfigFile[PLATFORM_MAX_PATH];
+static char g_sRawFileName[PLATFORM_MAX_PATH];
+static char g_sFolderPath[PLATFORM_MAX_PATH];
 
-static bool:g_bCreateFile = false;
-static Handle:g_hPluginHandle = INVALID_HANDLE;
+static bool g_bCreateFile = false;
+static Handle g_hPluginHandle = INVALID_HANDLE;
 
 
 
 // Workaround for now
-static g_iLastFindResult;
-static g_iLastAppendResult;
+static int g_iLastFindResult;
+static int g_iLastAppendResult;
 
 
 
@@ -66,7 +64,7 @@ static g_iLastAppendResult;
  *
  * @return			Returns one of the AUTOEXEC_FIND values or -1 if not set.
 */
-stock AutoExecConfig_GetFindResult()
+stock int AutoExecConfig_GetFindResult()
 {
 	return g_iLastFindResult;
 }
@@ -80,7 +78,7 @@ stock AutoExecConfig_GetFindResult()
  *
  * @return			Returns one of the AUTOEXEC_APPEND values or -1 if not set.
 */
-stock AutoExecConfig_GetAppendResult()
+stock int AutoExecConfig_GetAppendResult()
 {
 	return g_iLastAppendResult;
 }
@@ -92,7 +90,7 @@ stock AutoExecConfig_GetAppendResult()
  * @param create 	True if config file should be created, false otherwise.
  * @noreturn
  */
-stock AutoExecConfig_SetCreateFile(bool:create)
+stock bool AutoExecConfig_SetCreateFile(bool create)
 {
 	g_bCreateFile = create;
 }
@@ -103,7 +101,7 @@ stock AutoExecConfig_SetCreateFile(bool:create)
  *
  * @return			Returns true, if the config file should be created or false if it should not.
  */
-stock bool:AutoExecConfig_GetCreateFile()
+stock bool AutoExecConfig_GetCreateFile()
 {
 	return g_bCreateFile;
 }
@@ -117,7 +115,7 @@ stock bool:AutoExecConfig_GetCreateFile()
  * @param plugin 	The plugin to create convars for or INVALID_HANDLE to use the calling plugin.
  * @noreturn
  */
-stock AutoExecConfig_SetPlugin(Handle:plugin)
+stock void AutoExecConfig_SetPlugin(Handle plugin)
 {
 	g_hPluginHandle = plugin;
 }
@@ -128,7 +126,7 @@ stock AutoExecConfig_SetPlugin(Handle:plugin)
  *
  * @return			The plugin handle
  */
-stock Handle:AutoExecConfig_GetPlugin()
+stock Handle AutoExecConfig_GetPlugin()
 {
 	return g_hPluginHandle;
 }
@@ -141,7 +139,7 @@ stock Handle:AutoExecConfig_GetPlugin()
  * @param folder		Folder under cfg/ to use.  By default this is "sourcemod."
  * @return				True if formatter returned success, false otherwise.
 */
-stock bool:AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
+stock bool AutoExecConfig_SetFile(char[] file, char[] folder="sourcemod")
 {
 	Format(g_sConfigFile, sizeof(g_sConfigFile), "%s", file);
 	
@@ -166,7 +164,7 @@ stock bool:AutoExecConfig_SetFile(String:file[], String:folder[]="sourcemod")
  * @param size			Maximum size of buffer
  * @return				True if filename was set, false otherwise.
 */
-stock AutoExecConfig_GetFile(String:buffer[], size)
+stock bool AutoExecConfig_GetFile(char[] buffer,int size)
 {
 	if(strlen(g_sConfigFile) > 0)
 	{
@@ -201,7 +199,7 @@ stock AutoExecConfig_GetFile(String:buffer[], size)
  * @return				A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
  * @error				Convar name is blank or is the same as an existing console command.
 */
-stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defaultValue[], const String:description[]="", flags=0, bool:hasMin=false, Float:min=0.0, bool:hasMax=false, Float:max=0.0)
+stock ConVar AutoExecConfig_CreateConVar(const char[] name, const char[] defaultValue, const char[] description="", int flags=0, bool hasMin=false, float min=0.0, bool hasMax=false, float max=0.0)
 {
 	// If configfile was set and convar has no dontrecord flag
 	if(!(flags & FCVAR_DONTRECORD) && strlen(g_sConfigFile) > 0)
@@ -212,7 +210,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
 		
 		
 		// Add it if not found
-		decl String:buffer[64];
+		char buffer[64];
 		
 		g_iLastFindResult = AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true);
 		
@@ -237,7 +235,7 @@ stock Handle:AutoExecConfig_CreateConVar(const String:name[], const String:defau
  *
  * @noreturn
 */
-stock AutoExecConfig_ExecuteFile()
+stock void AutoExecConfig_ExecuteFile()
 {
 	// Only let sourcemod create the file, if we didn't do that already. 
 	AutoExecConfig(!g_bCreateFile, g_sRawFileName, g_sFolderPath);
@@ -254,7 +252,7 @@ stock AutoExecConfig_ExecuteFile()
  * @param size			Maximum size of buffer.
  * @return				Returns one of the AUTOEXEC_FORMAT values..
 */
-stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[]="sourcemod")
+stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] folder="sourcemod")
 {
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
@@ -271,7 +269,7 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[
 	
 	
 	// Pathprefix
-	decl String:pathprefixbuffer[PLATFORM_MAX_PATH];
+	char pathprefixbuffer[PLATFORM_MAX_PATH];
 	if(strlen(folder) > 0)
 	{
 		Format(pathprefixbuffer, sizeof(pathprefixbuffer), "cfg/%s/", folder);
@@ -282,7 +280,7 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[
 	}
 	
 	
-	decl String:filebuffer[PLATFORM_MAX_PATH];
+	char filebuffer[PLATFORM_MAX_PATH];
 	filebuffer[0] = '\0';
 	
 	// Add path if file doesn't begin with it
@@ -323,7 +321,7 @@ stock static AutoExecConfig_FormatFileName(String:buffer[], size, String:folder[
  * @param max			Maximum floating point value that the convar can have if hasMax is true.
  * @return				Returns one of the AUTOEXEC_APPEND values
 */
-stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[], const String:description[], flags, bool:hasMin, Float:min, bool:hasMax, Float:max)
+stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValue, const char[] description, int flags, bool hasMin, float min, bool hasMax, float max)
 {
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
@@ -332,19 +330,19 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 	}
 	
 	
-	decl String:filebuffer[PLATFORM_MAX_PATH];
+	char filebuffer[PLATFORM_MAX_PATH];
 	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
 	
 	
 	//PrintToServer("pathbuffer: %s", filebuffer);
 	
-	new bool:bFileExists = FileExists(filebuffer);
+	bool bFileExists = FileExists(filebuffer);
 	
 	if(g_bCreateFile || bFileExists)
 	{
 		// If the file already exists we open it in append mode, otherwise we use a write mode which creates the file
-		new Handle:hfile = OpenFile(filebuffer, (bFileExists ? "a" : "w"));
-		decl String:writebuffer[2048];
+		Handle hfile = OpenFile(filebuffer, (bFileExists ? "a" : "w"));
+		char writebuffer[2048];
 		
 		
 		if(hfile == INVALID_HANDLE)
@@ -367,7 +365,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		
 
 		// This is used for multiline comments
-		new newlines = GetCharCountInStr('\n', description);
+		int newlines = GetCharCountInStr('\n', description);
 		if(newlines == 0)
 		{
 			// We have no newlines, we can write the description to the file as is
@@ -376,11 +374,11 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
 		}
 		else
 		{
-			new String:newlineBuf[newlines +1][2048];
+			char[][] newlineBuf = new char[newlines +1][2048];
 			ExplodeString(description, "\n", newlineBuf, newlines +1, 2048, false);
 			
 			// Each newline gets a commented newline
-			for(new i; i <= newlines; i++)
+			for(int i; i <= newlines; i++)
 			{
 				if(strlen(newlineBuf[i]) > 0)
 				{
@@ -447,7 +445,7 @@ stock AutoExecConfig_AppendValue(const String:name[], const String:defaultValue[
  * @param caseSensitive		Whether or not the search should be case sensitive.
  * @return					Returns one of the AUTOEXEC_FIND values
 */
-stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:caseSensitive=false)
+stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bool caseSensitive=false)
 {
 	// Security for decl users
 	value[0] = '\0';
@@ -460,14 +458,14 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 	}
 	
 	
-	decl String:filebuffer[PLATFORM_MAX_PATH];
+	char filebuffer[PLATFORM_MAX_PATH];
 	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
 	
 	
 	
 	//PrintToServer("pathbuffer: %s", filebuffer);
 	
-	new bool:bFileExists = FileExists(filebuffer);
+	bool bFileExists = FileExists(filebuffer);
 	
 	// We want to create the config file and it doesn't exist yet.
 	if(g_bCreateFile && !bFileExists)
@@ -478,16 +476,16 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
 	
 	if(bFileExists)
 	{
-		new Handle:hfile = OpenFile(filebuffer, "r");
-		new valuestart;
-		new valueend;
-		new cvarend;
+		Handle hfile = OpenFile(filebuffer, "r");
+		int valuestart;
+		int valueend;
+		int cvarend;
 		
 		// Just an reminder to self, leave the values that high
-		decl String:sConvar[64];
-		decl String:sValue[64];
-		decl String:readbuffer[2048];
-		decl String:copybuffer[2048];
+		char sConvar[64];
+		char sValue[64];
+		char readbuffer[2048];
+		char copybuffer[2048];
 		
 		if(hfile == INVALID_HANDLE)
 		{
@@ -592,7 +590,7 @@ stock AutoExecConfig_FindValue(const String:cvar[], String:value[], size, bool:c
  *
  * @return					One of the AUTOEXEC_CLEAN values.
 */
-stock AutoExecConfig_CleanFile()
+stock int AutoExecConfig_CleanFile()
 {
 	// No config set
 	if(strlen(g_sConfigFile) < 1)
@@ -601,7 +599,7 @@ stock AutoExecConfig_CleanFile()
 	}
 	
 	
-	decl String:sfile[PLATFORM_MAX_PATH];
+	char sfile[PLATFORM_MAX_PATH];
 	strcopy(sfile, sizeof(sfile), g_sConfigFile);
 	
 	
@@ -613,18 +611,18 @@ stock AutoExecConfig_CleanFile()
 	
 	
 	
-	decl String:sfile2[PLATFORM_MAX_PATH];
+	char sfile2[PLATFORM_MAX_PATH];
 	Format(sfile2, sizeof(sfile2), "%s_tempcopy", sfile);
 	
 	
-	decl String:readbuffer[2048];
-	new count;
-	new bool:firstreached;
+	char readbuffer[2048];
+	int count;
+	bool firstreached;
 	
 	
 	// Open files
-	new Handle:hfile1 = OpenFile(sfile, "r");
-	new Handle:hfile2 = OpenFile(sfile2, "w");
+	Handle hfile1 = OpenFile(sfile, "r");
+	Handle hfile2 = OpenFile(sfile2, "w");
 	
 	
 	
@@ -700,12 +698,12 @@ stock AutoExecConfig_CleanFile()
  * @param str		String to search for in.
  * @return			Occurences of the given char found in string.
 */
-stock static GetCharCountInStr(character, const String:str[])
+stock static int GetCharCountInStr(int character, const char[] str)
 {
-	new len = strlen(str);
-	new count;
+	int len = strlen(str);
+	int count;
 	
-	for(new i; i < len; i++)
+	for(int i; i < len; i++)
 	{
 		if(str[i] == character)
 		{
