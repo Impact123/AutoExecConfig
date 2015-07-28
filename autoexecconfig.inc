@@ -859,7 +859,7 @@ stock bool AutoExecConfig_CacheConvars()
 		char sTrieValue[64];
 		if (!g_hConvarTrie.GetString(sConvar, sTrieValue, sizeof(sTrieValue)))
 		{
-			PrintToServer("Adding convar %s to trie", sConvar);
+			//PrintToServer("Adding convar %s to trie", sConvar);
 			g_hConvarTrie.SetString(sConvar, sValue);
 		}					
 	}
