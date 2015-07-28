@@ -772,8 +772,6 @@ stock bool AutoExecConfig_CacheConvars()
 	}
 	
 	
-	g_bCacheEnabled = true;
-	
 	
 	File fFile = OpenFile(filebuffer, "r");
 	int valuestart;
@@ -872,6 +870,7 @@ stock bool AutoExecConfig_CacheConvars()
 	
 	fFile.Close();	
 	
+	g_bCacheEnabled = true;
 	
 	return true;
 }
