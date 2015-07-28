@@ -3,13 +3,14 @@
 
 #pragma semicolon 1
 #include "autoexecconfig"
+#pragma newdecls required
 
 
-new Handle:g_hProf;
+Handle g_hProf;
 
 
 
-public Plugin:myinfo = 
+public Plugin myinfo = 
 {
 	name = "AutoExecConfig Testsuite",
 	author = "Impact",
@@ -20,13 +21,13 @@ public Plugin:myinfo =
 
 
 
-public OnPluginStart()
+public void OnPluginStart()
 {
 	g_hProf = CreateProfiler();
 	StartProfiling(g_hProf);
 	
 	
-	new bool:appended;
+	bool appended;
 	
 	
 	// Set file, second parameter is optional and defaults to sourcemod
@@ -64,7 +65,7 @@ public OnPluginStart()
 	
 	
 	// Cleaning is expensive
-	if(appended)
+	if (appended)
 	{
 		AutoExecConfig_CleanFile();
 	}
@@ -73,7 +74,7 @@ public OnPluginStart()
 
 	StopProfiling(g_hProf);
 	
-	new Float:fProfilerTime = GetProfilerTime(g_hProf);
+	float fProfilerTime = GetProfilerTime(g_hProf);
 	PrintToServer("Benchmark: %f seconds, %f milliseconds", fProfilerTime, fProfilerTime * 1000);
 	PrintToServer("Benchmark needed approximately %f %% of 1 Second", CalculateFloatPercentage(fProfilerTime, 0.01));
 	PrintToServer("Benchmark needed approximately %f %% of 1 Frame", CalculateFloatPercentage(fProfilerTime, 0.01 / 66.7));
@@ -81,9 +82,9 @@ public OnPluginStart()
 
 
 
-SetAppend(&appended)
+void SetAppend(bool &appended)
 {
-	if(AutoExecConfig_GetAppendResult() == AUTOEXEC_APPEND_SUCCESS)
+	if (AutoExecConfig_GetAppendResult() == AUTOEXEC_APPEND_SUCCESS)
 	{
 		appended = true;
 	}
@@ -91,11 +92,12 @@ SetAppend(&appended)
 
 
 
-stock Float:CalculateFloatPercentage(Float:value1, Float:value2)
+stock float CalculateFloatPercentage(float value1, float value2)
 {
-	if(value1 == 0.0 || value2 == 0.0)
+	if (value1 == 0.0 || value2 == 0.0)
 	{	
 		return 0.0;
 	}
-	return ((value1 / value2));
+	
+	return (value1 / value2);
 }
