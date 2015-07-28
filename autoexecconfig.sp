@@ -36,6 +36,8 @@ public OnPluginStart()
 	// We want to create the file if it doesn't exists already
 	AutoExecConfig_SetCreateFile(true);
 	
+	// Reduces the need to read the config for each cvar
+	AutoExecConfig_CacheConvars();
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
 	SetAppend(appended);

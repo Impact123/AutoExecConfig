@@ -47,6 +47,9 @@ static char g_sConfigFile[PLATFORM_MAX_PATH];
 static char g_sRawFileName[PLATFORM_MAX_PATH];
 static char g_sFolderPath[PLATFORM_MAX_PATH];
 
+static StringMap g_hConvarTrie = null;
+static bool g_bCacheEnabled = false;
+
 static bool g_bCreateFile = false;
 static Handle g_hPluginHandle = null;
 
@@ -457,6 +460,14 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 		return AUTOEXEC_NO_CONFIG;
 	}
 	
+	char sTrieValue[64];
+	if (g_bCacheEnabled && g_hConvarTrie.GetString(cvar, sTrieValue, sizeof(sTrieValue)))
+	{
+		strcopy(value, size, sTrieValue); 
+		
+		return AUTOEXEC_FIND_SUCCESS;
+	}
+	
 	
 	char filebuffer[PLATFORM_MAX_PATH];
 	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
@@ -712,4 +723,149 @@ stock static int GetCharCountInStr(int character, const char[] str)
 	}
 	
 	return count;
+}
+
+
+
+
+
+
+/**
+ * Reads the existing config file and caches any convars and values that were found.
+ *
+ * @param str		String to search for in.
+ * @return			True when config existed and could be read, false otherwise.
+*/
+stock bool AutoExecConfig_CacheConvars()
+{
+	if (g_hConvarTrie == null)
+	{
+		g_hConvarTrie = new StringMap();
+	}
+		
+	// No config set
+	if(strlen(g_sConfigFile) < 1)
+	{
+		return false;
+	}
+	
+	
+	char filebuffer[PLATFORM_MAX_PATH];
+	strcopy(filebuffer, sizeof(filebuffer), g_sConfigFile);
+	
+	
+	
+	//PrintToServer("pathbuffer: %s", filebuffer);
+	
+	bool bFileExists = FileExists(filebuffer);
+	
+	// We want to create the config file and it doesn't exist yet.
+	if(!bFileExists)
+	{
+		return false;
+	}
+	
+	
+	g_bCacheEnabled = true;
+	
+	
+	File fFile = OpenFile(filebuffer, "r");
+	int valuestart;
+	int valueend;
+	int cvarend;
+	
+	// Just an reminder to self, leave the values that high
+	char sConvar[64];
+	char sValue[64];
+	char readbuffer[2048];
+	char copybuffer[2048];
+	
+	if(fFile == null)
+	{
+		return false;
+	}
+	
+	
+	while(!fFile.EndOfFile() && fFile.ReadLine(readbuffer, sizeof(readbuffer)))
+	{
+		// Is a comment or not valid
+		if(IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || !IsCharAlpha(readbuffer[0]))
+		{
+			continue;
+		}
+		
+		
+		// Has not enough spaces, must have at least 1
+		if(GetCharCountInStr(' ', readbuffer) < 1)
+		{
+			continue;
+		}
+
+		
+		// Ignore cvars which aren't quoted
+		if(GetCharCountInStr('"', readbuffer) != 2)
+		{
+			continue;
+		}
+		
+		
+		
+		// Get the start of the value
+		if( (valuestart = StrContains(readbuffer, "\"")) == -1 )
+		{
+			continue;
+		}
+		
+		
+		// Get the end of the value
+		if( (valueend = StrContains(readbuffer[valuestart+1], "\"")) == -1 )
+		{
+			continue;
+		}
+		
+		
+		// Get the start of the cvar, 
+		if( (cvarend = StrContains(readbuffer, " ")) == -1 || cvarend >= valuestart)
+		{
+			continue;
+		}
+		
+		
+		// Skip if cvarendindex is before valuestartindex
+		if(cvarend >= valuestart)
+		{
+			continue;
+		}
+		
+		
+		// Convar
+		// Tempcopy for security
+		strcopy(copybuffer, sizeof(copybuffer), readbuffer);
+		copybuffer[cvarend] = '\0';
+		
+		strcopy(sConvar, sizeof(sConvar), copybuffer);
+		
+
+		// Value
+		// Tempcopy for security
+		strcopy(copybuffer, sizeof(copybuffer), readbuffer[valuestart+1]);
+		copybuffer[valueend] = '\0';
+		
+		strcopy(sValue, sizeof(sValue), copybuffer);
+		
+		
+		//PrintToServer("Cvar %s has a value of %s", sConvar, sValue);
+		
+		char sTrieValue[64];
+		if (!g_hConvarTrie.GetString(sConvar, sTrieValue, sizeof(sTrieValue)))
+		{
+			PrintToServer("Adding convar %s to trie", sConvar);
+			g_hConvarTrie.SetString(sConvar, sValue);
+		}					
+	}
+	
+	fFile.Close();	
+	
+	
+	return true;
 }
