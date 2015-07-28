@@ -460,9 +460,10 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 		return AUTOEXEC_NO_CONFIG;
 	}
 	
-	char sTrieValue[64];
 	if (g_bCacheEnabled)
 	{
+		char sTrieValue[64];
+		
 		if (g_hConvarTrie.GetString(cvar, sTrieValue, sizeof(sTrieValue)))
 		{
 			strcopy(value, size, sTrieValue);
