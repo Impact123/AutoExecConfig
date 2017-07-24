@@ -15,7 +15,7 @@ public Plugin myinfo =
 	name = "AutoExecConfig Testsuite",
 	author = "Impact",
 	description = "Tests the autoexecconfig include",
-	version = "0.0.1-dev",
+	version = AUTOEXECCONFIG_VERSION,
 	url = "http://gugyclan.eu"
 }
 
@@ -30,14 +30,14 @@ public void OnPluginStart()
 	bool appended;
 	
 	
-	// Set file, second parameter is optional and defaults to sourcemod
+	// Set file, extension is optional aswell as the second parameter which defaults to sourcemod
 	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
 	
 	
-	// We want to create the file if it doesn't exists already
+	// We want to let the include file create the file if it doesn't exists already, otherwise we let sourcemod create it
 	AutoExecConfig_SetCreateFile(true);
 	
-	// Reduces the need to read the config for each cvar
+	// Reduces the need to read the config for each cvar, needs more testing
 	AutoExecConfig_CacheConvars();
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
@@ -64,7 +64,7 @@ public void OnPluginStart()
 	
 	
 	
-	// Cleaning is expensive
+	// Cleaning is an relatively expensive file operation
 	if (appended)
 	{
 		AutoExecConfig_CleanFile();
