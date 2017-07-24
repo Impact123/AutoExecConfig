@@ -16,7 +16,7 @@ public Plugin myinfo =
 	author = "Impact",
 	description = "Tests the autoexecconfig include",
 	version = AUTOEXECCONFIG_VERSION,
-	url = "http://gugyclan.eu"
+	url = AUTOEXECCONFIG_URL
 }
 
 
