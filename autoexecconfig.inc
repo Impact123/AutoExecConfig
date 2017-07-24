@@ -65,7 +65,7 @@ static int g_iLastAppendResult;
 /**
  * Returns the last result from the parser.
  *
- * @return			Returns one of the AUTOEXEC_FIND values or -1 if not set.
+ * @return        Returns one of the AUTOEXEC_FIND values or -1 if not set.
 */
 stock int AutoExecConfig_GetFindResult()
 {
@@ -79,7 +79,7 @@ stock int AutoExecConfig_GetFindResult()
 /**
  * Returns the last result from the appender.
  *
- * @return			Returns one of the AUTOEXEC_APPEND values or -1 if not set.
+ * @return        Returns one of the AUTOEXEC_APPEND values or -1 if not set.
 */
 stock int AutoExecConfig_GetAppendResult()
 {
@@ -88,9 +88,9 @@ stock int AutoExecConfig_GetAppendResult()
 
 
 /**
- * Set if the config file should be created if it doesn't exist yet.
+ * Set if the config file should be created by the autoexecconfig include itself if it doesn't exist.
  *
- * @param create 	True if config file should be created, false otherwise.
+ * @param create        True if config file should be created, false otherwise.
  * @noreturn
  */
 stock void AutoExecConfig_SetCreateFile(bool create)
@@ -102,7 +102,7 @@ stock void AutoExecConfig_SetCreateFile(bool create)
 /**
  * Returns if the config file should be created if it doesn't exist.
  *
- * @return			Returns true, if the config file should be created or false if it should not.
+ * @return        Returns true, if the config file should be created or false if it should not.
  */
 stock bool AutoExecConfig_GetCreateFile()
 {
@@ -115,7 +115,7 @@ stock bool AutoExecConfig_GetCreateFile()
  * Set to null to use the calling plugin.
  * Used to print the correct filename in the top comment when creating the file.
  *
- * @param plugin 	The plugin to create convars for or null to use the calling plugin.
+ * @param plugin        The plugin to create convars for or null to use the calling plugin.
  * @noreturn
  */
 stock void AutoExecConfig_SetPlugin(Handle plugin)
@@ -125,9 +125,9 @@ stock void AutoExecConfig_SetPlugin(Handle plugin)
 
 
 /**
- * Returns the plugin for which the config file is created.
+ * Returns the plugin's handle for which the config file is created.
  *
- * @return			The plugin handle
+ * @return        The plugin handle
  */
 stock Handle AutoExecConfig_GetPlugin()
 {
@@ -138,9 +138,9 @@ stock Handle AutoExecConfig_GetPlugin()
 /**
  * Set the global autoconfigfile used by functions of this file.
  *
- * @param file			Name of the config file, path and .cfg extension is being added if not given.
- * @param folder		Folder under cfg/ to use.  By default this is "sourcemod."
- * @return				True if formatter returned success, false otherwise.
+ * @param file          Name of the config file, path and .cfg extension is being added if not given.
+ * @param folder        Folder under cfg/ to use.  By default this is "sourcemod."
+ * @return              True if formatter returned success, false otherwise.
 */
 stock bool AutoExecConfig_SetFile(char[] file, char[] folder="sourcemod")
 {
@@ -163,9 +163,9 @@ stock bool AutoExecConfig_SetFile(char[] file, char[] folder="sourcemod")
 /**
  * Get the formatted autoconfigfile used by functions of this file.
  *
- * @param buffer		String to format.
- * @param size			Maximum size of buffer
- * @return				True if filename was set, false otherwise.
+ * @param buffer        String to format.
+ * @param size          Maximum size of buffer
+ * @return              True if filename was set, false otherwise.
 */
 stock bool AutoExecConfig_GetFile(char[] buffer,int size)
 {
@@ -191,16 +191,16 @@ stock bool AutoExecConfig_GetFile(char[] buffer,int size)
  * Creates a convar and appends it to the autoconfigfile if not found.
  * FCVAR_DONTRECORD will be skipped.
  *
- * @param name			Name of new convar.
- * @param defaultValue	String containing the default value of new convar.
- * @param description	Optional description of the convar.
- * @param flags			Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
- * @param hasMin		Optional boolean that determines if the convar has a minimum value.
- * @param min			Minimum floating point value that the convar can have if hasMin is true.
- * @param hasMax		Optional boolean that determines if the convar has a maximum value.
- * @param max			Maximum floating point value that the convar can have if hasMax is true.
- * @return				A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
- * @error				Convar name is blank or is the same as an existing console command.
+ * @param name                Name of new convar.
+ * @param defaultValue        String containing the default value of new convar.
+ * @param description         Optional description of the convar.
+ * @param flags               Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
+ * @param hasMin              Optional boolean that determines if the convar has a minimum value.
+ * @param min                 Minimum floating point value that the convar can have if hasMin is true.
+ * @param hasMax              Optional boolean that determines if the convar has a maximum value.
+ * @param max                 Maximum floating point value that the convar can have if hasMax is true.
+ * @return                    A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
+ * @error                     Convar name is blank or is the same as an existing console command.
 */
 stock ConVar AutoExecConfig_CreateConVar(const char[] name, const char[] defaultValue, const char[] description="", int flags=0, bool hasMin=false, float min=0.0, bool hasMax=false, float max=0.0)
 {
@@ -233,8 +233,8 @@ stock ConVar AutoExecConfig_CreateConVar(const char[] name, const char[] default
 
 
 /**
- * Executes the autoconfigfile, and adds it to the OnConfigsExecuted forward.
- * If we didn't created it already we let SourceMod create it.
+ * Executes the autoconfigfile and adds it to the OnConfigsExecuted forward.
+ * If we didn't create it ourselves we let SourceMod create it.
  *
  * @noreturn
 */
@@ -249,11 +249,11 @@ stock void AutoExecConfig_ExecuteFile()
 
 
 /**
- * Formats a autoconfigfile, prefixes path and adds .cfg extension if missed.
+ * Formats a autoconfigfile, prefixes path and adds .cfg extension if missing.
  *
- * @param buffer		String to format.
- * @param size			Maximum size of buffer.
- * @return				Returns one of the AUTOEXEC_FORMAT values..
+ * @param buffer        String to format.
+ * @param size          Maximum size of buffer.
+ * @return              Returns one of the AUTOEXEC_FORMAT values..
 */
 stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] folder="sourcemod")
 {
@@ -314,15 +314,15 @@ stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] f
 /**
  * Appends a convar to the global autoconfigfile
  *
- * @param name			Name of new convar.
- * @param defaultValue	String containing the default value of new convar.
- * @param description	Optional description of the convar.
- * @param flags			Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
- * @param hasMin		Optional boolean that determines if the convar has a minimum value.
- * @param min			Minimum floating point value that the convar can have if hasMin is true.
- * @param hasMax		Optional boolean that determines if the convar has a maximum value.
- * @param max			Maximum floating point value that the convar can have if hasMax is true.
- * @return				Returns one of the AUTOEXEC_APPEND values
+ * @param name                Name of new convar.
+ * @param defaultValue        String containing the default value of new convar.
+ * @param description         Optional description of the convar.
+ * @param flags               Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
+ * @param hasMin              Optional boolean that determines if the convar has a minimum value.
+ * @param min                 Minimum floating point value that the convar can have if hasMin is true.
+ * @param hasMax              Optional boolean that determines if the convar has a maximum value.
+ * @param max                 Maximum floating point value that the convar can have if hasMax is true.
+ * @return                    Returns one of the AUTOEXEC_APPEND values
 */
 stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValue, const char[] description, int flags, bool hasMin, float min, bool hasMax, float max)
 {
@@ -440,13 +440,13 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 
 
 /**
- * Returns a convars value from the global autoconfigfile
+ * Returns a convar's value from the global autoconfigfile
  *
- * @param cvar				Cvar to search for.
- * @param value				Buffer to store result into.
- * @param size				Maximum size of buffer.
- * @param caseSensitive		Whether or not the search should be case sensitive.
- * @return					Returns one of the AUTOEXEC_FIND values
+ * @param cvar                 Cvar to search for.
+ * @param value                Buffer to store result into.
+ * @param size                 Maximum size of buffer.
+ * @param caseSensitive        Whether or not the search should be case sensitive.
+ * @return                     Returns one of the AUTOEXEC_FIND values
 */
 stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bool caseSensitive=false)
 {
@@ -605,7 +605,7 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 /**
  * Cleans the global autoconfigfile from too much spaces
  *
- * @return					One of the AUTOEXEC_CLEAN values.
+ * @return        One of the AUTOEXEC_CLEAN values.
 */
 stock int AutoExecConfig_CleanFile()
 {
@@ -712,8 +712,8 @@ stock int AutoExecConfig_CleanFile()
 /**
  * Returns how many times the given char occures in the given string.
  *
- * @param str		String to search for in.
- * @return			Occurences of the given char found in string.
+ * @param str        String to search for in.
+ * @return           Occurences of the given char found in string.
 */
 stock static int GetCharCountInStr(int character, const char[] str)
 {
@@ -739,8 +739,7 @@ stock static int GetCharCountInStr(int character, const char[] str)
 /**
  * Reads the existing config file and caches any convars and values that were found.
  *
- * @param str		String to search for in.
- * @return			True when config existed and could be read, false otherwise.
+ * @return        True when config existed and could be read, false otherwise.
 */
 stock bool AutoExecConfig_CacheConvars()
 {
