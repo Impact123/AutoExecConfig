@@ -28,35 +28,44 @@ public void OnPluginStart()
 	
 	
 	bool appended;
+	bool error;
 	
 	
-	// Set file, extension is optional aswell as the second parameter which defaults to sourcemod
-	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
-	
+	// Order of this is important, the setting has to be known before we set the file path
+	AutoExecConfig_SetCreateDirectory(true);
 	
 	// We want to let the include file create the file if it doesn't exists already, otherwise we let sourcemod create it
 	AutoExecConfig_SetCreateFile(true);
+	
+	// Set file, extension is optional aswell as the second parameter which defaults to sourcemod
+	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
 	
 	// Reduces the need to read the config for each cvar, needs more testing
 	AutoExecConfig_CacheConvars();
 	
 	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
 	SetAppend(appended);
+	SetError(error);
 	
 	AutoExecConfig_CreateConVar("listme2", "Anothervalue", "An other description");
 	SetAppend(appended);
+	SetError(error);
 	
-	AutoExecConfig_CreateConVar("boundtest", "Anothervaluetoo", "Cvar for boundtest", FCVAR_PLUGIN, true, 5.0, true, 10.0);
+	AutoExecConfig_CreateConVar("boundtest", "Anothervaluetoo", "Cvar for boundtest", FCVAR_NONE, true, 5.0, true, 10.0);
 	SetAppend(appended);
+	SetError(error);
 	
-	AutoExecConfig_CreateConVar("newlinetest", "SomeCvar", "This\nIs\nA\nNewline\nTest", FCVAR_PLUGIN);
+	AutoExecConfig_CreateConVar("newlinetest", "SomeCvar", "This\nIs\nA\nNewline\nTest", FCVAR_NONE);
 	SetAppend(appended);
+	SetError(error);
 	
-	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_PLUGIN, false, 0.0, true, 12.5);
+	AutoExecConfig_CreateConVar("CaSeSeNsItIvEtEsT", "Casesensitivecvar", "Weird written cvar with bounds", FCVAR_NONE, false, 0.0, true, 12.5);
 	SetAppend(appended);
+	SetError(error);
 	
-	AutoExecConfig_CreateConVar("LongDescriptionTest", "LongDescxyz", "Really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long description", FCVAR_PLUGIN, false, 4.0, true, 53.5);
+	AutoExecConfig_CreateConVar("LongDescriptionTest", "LongDescxyz", "Really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long description", FCVAR_NONE, false, 4.0, true, 53.5);
 	SetAppend(appended);
+	SetError(error);
 
 	
 	// Execute the given config
@@ -67,7 +76,13 @@ public void OnPluginStart()
 	// Cleaning is an relatively expensive file operation
 	if (appended)
 	{
+		PrintToServer("Some convars were appended to the config, clean it up");
 		AutoExecConfig_CleanFile();
+	}
+	
+	if (error)
+	{
+		PrintToServer("Non successfull result occured, last find/append result: %d, %d", AutoExecConfig_GetFindResult(), AutoExecConfig_GetAppendResult());
 	}
 	
 
@@ -87,6 +102,19 @@ void SetAppend(bool &appended)
 	if (AutoExecConfig_GetAppendResult() == AUTOEXEC_APPEND_SUCCESS)
 	{
 		appended = true;
+	}
+}
+
+
+void SetError(bool &error)
+{
+	int findRes = AutoExecConfig_GetAppendResult();
+	int appendRes = AutoExecConfig_GetFindResult();
+	
+	if ( (findRes != -1 && findRes != AUTOEXEC_APPEND_SUCCESS) ||
+	     (appendRes != -1 && appendRes != AUTOEXEC_FIND_SUCCESS) )
+	{
+		error = true;
 	}
 }
 
