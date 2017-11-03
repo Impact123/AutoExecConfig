@@ -55,6 +55,8 @@ static bool g_bCacheEnabled = false;
 static bool g_bCreateFile = false;
 static Handle g_hPluginHandle = null;
 
+static bool g_bCreateDirectory = false;
+static int g_bCreateDirectoryMode = FPERM_U_READ|FPERM_U_WRITE|FPERM_U_EXEC|FPERM_G_READ|FPERM_G_EXEC|FPERM_O_READ|FPERM_O_EXEC;
 
 
 // Workaround for now
@@ -102,6 +104,21 @@ stock void AutoExecConfig_SetCreateFile(bool create)
 
 
 /**
+ * Set if the config file's folder should be created by the autoexecconfig include itself if it doesn't exist.
+ * Note: Must be used before AutoExecConfig_SetFile as the potential creation of it happens there 
+ *
+ * @param create        True if config file should be created, false otherwise.
+ * @param mode          Folder permission mode, default is u=rwx,g=rx,o=rx.
+ * @noreturn
+ */
+stock void AutoExecConfig_SetCreateDirectory(bool create, int mode=FPERM_U_READ|FPERM_U_WRITE|FPERM_U_EXEC|FPERM_G_READ|FPERM_G_EXEC|FPERM_O_READ|FPERM_O_EXEC)
+{
+	g_bCreateDirectory = create;
+	g_bCreateDirectoryMode = mode;
+}
+
+
+/**
  * Returns if the config file should be created if it doesn't exist.
  *
  * @return        Returns true, if the config file should be created or false if it should not.
@@ -139,6 +156,7 @@ stock Handle AutoExecConfig_GetPlugin()
 
 /**
  * Set the global autoconfigfile used by functions of this file.
+ * Note: does not support subfolders like folder1/folder2
  *
  * @param file          Name of the config file, path and .cfg extension is being added if not given.
  * @param folder        Folder under cfg/ to use.  By default this is "sourcemod."
@@ -278,6 +296,11 @@ stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] f
 	if (strlen(folder) > 0)
 	{
 		Format(pathprefixbuffer, sizeof(pathprefixbuffer), "cfg/%s/", folder);
+		
+		if (g_bCreateDirectory && !DirExists(pathprefixbuffer))
+		{
+			CreateDirectory(pathprefixbuffer, g_bCreateDirectoryMode);
+		}
 	}
 	else
 	{
@@ -423,12 +446,7 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 		fFile.WriteLine(writebuffer);
 		
 		
-		fFile.Close();
-		
-		
-		// Clean up the file
-		//AutoExecConfig_CleanFile(filebuffer, false);
-		
+		fFile.Close();		
 		
 		return AUTOEXEC_APPEND_SUCCESS;
 	}
