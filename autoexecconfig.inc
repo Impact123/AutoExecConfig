@@ -60,7 +60,7 @@
 // Formatter
 #define AUTOEXEC_FORMAT_BAD_FILENAME   40
 #define AUTOEXEC_FORMAT_SUCCESS        41
-
+#define AUTOEXEC_FORMAT_BAD_FOLDERNAME 42
 
 
 // Global variables
@@ -307,6 +307,12 @@ stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] f
 	if (StrContains(g_sConfigFile, ".cfg") == -1 && strlen(g_sConfigFile) < 4)
 	{
 		return AUTOEXEC_FORMAT_BAD_FILENAME;
+	}
+	
+	// Folder can't contain slashes
+	if (StrContains(folder, "/") != -1 || StrContains(folder, "\\") != -1)
+	{
+		return AUTOEXEC_FORMAT_BAD_FOLDERNAME;
 	}
 	
 	
