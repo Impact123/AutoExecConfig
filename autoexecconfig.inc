@@ -304,7 +304,7 @@ stock static int AutoExecConfig_FormatFileName(char[] buffer, int size, char[] f
 	
 	
 	// Can't be an cfgfile
-	if (StrContains(g_sConfigFile, ".cfg") == -1 && strlen(g_sConfigFile) < 4)
+	if (StrContains(g_sConfigFile, ".cfg") != -1 && strlen(g_sConfigFile) < 4)
 	{
 		return AUTOEXEC_FORMAT_BAD_FILENAME;
 	}
