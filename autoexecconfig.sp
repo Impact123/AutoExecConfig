@@ -58,9 +58,7 @@ public void OnPluginStart()
 	
 	// Set file, extension is optional aswell as the second parameter which defaults to sourcemod
 	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
-	
-	// Reduces the need to read the config for each cvar, needs more testing
-	AutoExecConfig_CacheConvars();
+
 	
 	AutoExecConfig_CreateConVar("listme", "Avalue", "An description");
 	SetAppend(appended);
