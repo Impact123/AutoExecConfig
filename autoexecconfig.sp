@@ -62,7 +62,7 @@ public void OnPluginStart()
 	// Reduces the need to read the config for each cvar, needs more testing
 	AutoExecConfig_CacheConvars();
 	
-	AutoExecConfig_CreateConVar("listme", "Anvalue", "An description");
+	AutoExecConfig_CreateConVar("listme", "Avalue", "An description");
 	SetAppend(appended);
 	SetError(error);
 	
@@ -83,6 +83,10 @@ public void OnPluginStart()
 	SetError(error);
 	
 	AutoExecConfig_CreateConVar("LongDescriptionTest", "LongDescxyz", "Really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, really, long description", FCVAR_NONE, false, 4.0, true, 53.5);
+	SetAppend(appended);
+	SetError(error);
+	
+	AutoExecConfig_CreateConVar("321isgreaterthan123", "Anothervalue", "Convar with numbers");
 	SetAppend(appended);
 	SetError(error);
 
