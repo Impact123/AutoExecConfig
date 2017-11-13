@@ -1,0 +1,21 @@
+language: c
+
+sudo: false
+addons:
+    apt:
+        packages:
+            - lib32stdc++6
+
+env:
+    - SMBRANCH=1.8
+    - SMBRANCH=1.9
+
+before_script:
+    - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMBRANCH}"
+    - wget "$SMPACKAGE" -O latest.tar.gz
+    - mkdir $SMBRANCH
+    - tar xfz latest.tar.gz -C $SMBRANCH
+    - export SMPATH=$(pwd)/$SMBRANCH/addons/sourcemod/scripting
+
+script:
+    - $SMPATH/spcomp autoexecconfig.sp
