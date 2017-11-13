@@ -558,7 +558,7 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 		while (!fFile.EndOfFile() && fFile.ReadLine(readbuffer, sizeof(readbuffer)))
 		{
 			// Is a comment or not valid
-			if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || !IsCharAlpha(readbuffer[0]))
+			if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || (!IsCharNumeric(readbuffer[0]) && !IsCharAlpha(readbuffer[0])) )
 			{
 				continue;
 			}
@@ -837,7 +837,7 @@ stock bool AutoExecConfig_CacheConvars()
 	while (!fFile.EndOfFile() && fFile.ReadLine(readbuffer, sizeof(readbuffer)))
 	{
 		// Is a comment or not valid
-		if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || !IsCharAlpha(readbuffer[0]))
+		if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || (!IsCharNumeric(readbuffer[0]) && !IsCharAlpha(readbuffer[0])) )
 		{
 			continue;
 		}
