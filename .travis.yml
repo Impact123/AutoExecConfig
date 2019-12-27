@@ -6,8 +6,8 @@ addons:
             - lib32stdc++6
 
 env:
-    - SMBRANCH=1.8
-    - SMBRANCH=1.9
+    - SMBRANCH=1.10
+    - SMBRANCH=1.11
 
 before_script:
     - SMPACKAGE="http://sourcemod.net/latest.php?os=linux&version=${SMBRANCH}"
