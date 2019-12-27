@@ -21,8 +21,8 @@
 #include <profiler>
 
 #pragma semicolon 1
-#include "autoexecconfig"
 #pragma newdecls required
+#include "autoexecconfig"
 
 
 Handle g_hProf;
