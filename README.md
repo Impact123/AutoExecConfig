@@ -3,9 +3,9 @@ An includefile to read and append to autoconfigs created by sourcemod.
 
 
 ## How does it work?
-If you add an convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you have set before.  
-If it can't be found within the file it will add it with the informations you created the convar with.  
-After that the file should be cleaned from unneccessary whitespaces created by the user or autoexecconfig itself.  
+If you add a convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you have set before.  
+If it can't be found within the file, it will add it with the information you created the convar with.  
+After that the file can be cleaned from unneccessary whitespaces created by the user or autoexecconfig itself.  
 
 
 
