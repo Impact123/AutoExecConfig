@@ -1,6 +1,7 @@
 # AutoExecConfig  
 An includefile to read and append to autoconfigs created by sourcemod.  
 
+![Build include](https://github.com/Impact123/AutoExecConfig/workflows/Build%20include/badge.svg)
 
 ## How does it work?
 If you add a convar via `AutoExecConfig_CreateConVar` it will be searched in the autoconfigfile you have set before.  
