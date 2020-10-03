@@ -1,0 +1,20 @@
+name: Build include
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sm-version: ["1.10.x", "1.11.x"]
+
+    name: SM version ${{ matrix.sm-version }}
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup SP
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.sm-version }}
+
+      - run: spcomp autoexecconfig.sp
