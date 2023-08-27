@@ -25,7 +25,7 @@
 
 #include <sourcemod>
 
-#define AUTOEXECCONFIG_VERSION "0.1.5"
+#define AUTOEXECCONFIG_VERSION "0.1.6"
 #define AUTOEXECCONFIG_URL     "https://forums.alliedmods.net/showthread.php?t=204254"
 
 // Append
@@ -401,7 +401,7 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 			
 			GetPluginFilename(g_hPluginHandle, writebuffer, sizeof(writebuffer));
 			Format(writebuffer, sizeof(writebuffer), "// ConVars for plugin \"%s\"", writebuffer);
-			fFile.WriteLine(writebuffer);
+			fFile.WriteLine("%s", writebuffer);
 		}
 		
 		// Spacer
@@ -414,7 +414,7 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 		{
 			// We have no newlines, we can write the description to the file as is
 			Format(writebuffer, sizeof(writebuffer), "// %s", description);
-			fFile.WriteLine(writebuffer);
+			fFile.WriteLine("%s", writebuffer);
 		}
 		else
 		{
@@ -438,14 +438,14 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 		
 		// Default
 		Format(writebuffer, sizeof(writebuffer), "// Default: \"%s\"", defaultValue);
-		fFile.WriteLine(writebuffer);
+		fFile.WriteLine("%s", writebuffer);
 		
 		
 		// Minimum
 		if (hasMin)
 		{		
 			Format(writebuffer, sizeof(writebuffer), "// Minimum: \"%f\"", min);
-			fFile.WriteLine(writebuffer);
+			fFile.WriteLine("%s", writebuffer);
 		}
 		
 		
@@ -453,13 +453,13 @@ stock int AutoExecConfig_AppendValue(const char[] name, const char[] defaultValu
 		if (hasMax)
 		{
 			Format(writebuffer, sizeof(writebuffer), "// Maximum: \"%f\"", max);
-			fFile.WriteLine(writebuffer);
+			fFile.WriteLine("%s", writebuffer);
 		}
 		
 		
 		// Write end and defaultvalue
 		Format(writebuffer, sizeof(writebuffer), "%s \"%s\"", name, defaultValue);
-		fFile.WriteLine(writebuffer);
+		fFile.WriteLine("%s", writebuffer);
 		
 		
 		fFile.Close();		
@@ -520,7 +520,7 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 		int valueend;
 		int cvarend;
 		
-		// Just an reminder to self, leave the values that high
+		// Just a reminder to self, leave the values that high
 		char sConvar[64];
 		char sValue[64];
 		char readbuffer[2048];
@@ -703,7 +703,7 @@ stock int AutoExecConfig_CleanFile()
 		if (count < 2 || !firstreached)
 		{
 			ReplaceString(readbuffer, sizeof(readbuffer), "\n", "");
-			fFile2.WriteLine(readbuffer);
+			fFile2.WriteLine("%s", readbuffer);
 		}
 		
 		

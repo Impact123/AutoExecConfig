@@ -87,6 +87,11 @@ public void OnPluginStart()
 	AutoExecConfig_CreateConVar("321isgreaterthan123", "Anothervalue", "Convar with numbers");
 	SetAppend(appended);
 	SetError(error);
+	
+	AutoExecConfig_CreateConVar("somespecialconvar", "%%%somevalue%%%", "Convar with percent signs");
+	SetAppend(appended);
+	SetError(error);
+
 
 	
 	// Execute the given config
