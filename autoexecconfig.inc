@@ -252,7 +252,7 @@ stock ConVar AutoExecConfig_CreateConVar(const char[] name, const char[] default
 		char buffer[64];
 		
 		g_iLastFindResult = AutoExecConfig_FindValue(name, buffer, sizeof(buffer), true);
-		
+
 		// We only add this convar if it doesn't exist, or the file doesn't exist and it should be auto-generated
 		if (g_iLastFindResult == AUTOEXEC_FIND_NOT_FOUND || (g_iLastFindResult == AUTOEXEC_FIND_FILE_NOT_FOUND && g_bCreateFile))
 		{
@@ -535,7 +535,7 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 		while (!fFile.EndOfFile() && fFile.ReadLine(readbuffer, sizeof(readbuffer)))
 		{
 			// Is a comment or not valid
-			if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/' || (!IsCharNumeric(readbuffer[0]) && !IsCharAlpha(readbuffer[0])) )
+			if (IsCharSpace(readbuffer[0]) || readbuffer[0] == '/')
 			{
 				continue;
 			}
@@ -610,7 +610,7 @@ stock int AutoExecConfig_FindValue(const char[] cvar, char[] value, int size, bo
 				return AUTOEXEC_FIND_SUCCESS;
 			}					
 		}
-		
+
 		fFile.Close();	
 		return AUTOEXEC_FIND_NOT_FOUND;
 	}

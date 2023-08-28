@@ -56,4 +56,3 @@ public OnPluginStart()
 * The search of the parser, by default, is case sensitive.
 * Convars with a FCVAR_DONTRECORD flag will be skipped by the appender.
 * The cleaner will format your file the way autoexecconfig does, 2 spaces after information, 1 after cvars.
-* Currently does not handle ConVars with a `%`s in their name.

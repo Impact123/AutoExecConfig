@@ -60,7 +60,7 @@ public void OnPluginStart()
 	AutoExecConfig_SetFile("autoexecconfigtest", "sourcemod");
 
 	
-	AutoExecConfig_CreateConVar("listme", "Avalue", "An description");
+	AutoExecConfig_CreateConVar("listme", "Avalue", "A description");
 	SetAppend(appended);
 	SetError(error);
 	
@@ -88,7 +88,7 @@ public void OnPluginStart()
 	SetAppend(appended);
 	SetError(error);
 	
-	AutoExecConfig_CreateConVar("somespecialconvar", "%%%somevalue%%%", "Convar with percent signs");
+	AutoExecConfig_CreateConVar("%%%somespecialconvar%%%", "%%%somevalue%%%", "Convar with percent signs");
 	SetAppend(appended);
 	SetError(error);
 
