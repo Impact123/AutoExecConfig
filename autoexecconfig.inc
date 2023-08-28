@@ -1,7 +1,7 @@
 /**
  * AutoExecConfig 
  *
- * Copyright (C) 2013-2019 Impact
+ * Copyright (C) 2013-2023 Impact
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,9 @@
 
 
 #include <sourcemod>
+
+#pragma semicolon 1
+#pragma newdecls required
 
 #define AUTOEXECCONFIG_VERSION "0.1.6"
 #define AUTOEXECCONFIG_URL     "https://forums.alliedmods.net/showthread.php?t=204254"
